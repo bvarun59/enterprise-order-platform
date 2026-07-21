@@ -49,3 +49,12 @@ dotnet new xunit -n ProductService.UnitTests
 
 
 docker run -d --name us -e ASPNETCORE_ENVIRONMENT=Development -p 3030:8080 userservice:v1
+
+
+In a production environment, we would typically automate database creation using one of these approaches:
+
+EF Core migrations executed by the application during startup.
+An initialization SQL script mounted into the PostgreSQL container.
+Infrastructure as Code (Terraform/CloudFormation) for managed databases like Amazon RDS.
+
+We'll discuss those approaches later. For now, manually creating the databases keeps things simple and lets us focus on Docker networking.

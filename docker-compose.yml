@@ -1,0 +1,132 @@
+services:
+
+  postgres:
+    image: postgres:16
+
+    container_name: postgres
+
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      
+    networks:
+      - devops-network
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  userservice:
+
+    build:
+      context: ./services/UserService
+      dockerfile: Dockerfile
+
+    image: userservice:v1
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=userservicedb;Username=postgres;Password=postgres
+
+    container_name: userservice
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    ports:
+      - "2003:8080"
+
+    networks:
+      - devops-network
+
+  productservice:
+
+    build:
+      context: ./services/ProductService
+      dockerfile: Dockerfile
+
+    image: productservice:v1
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=productservicedb;Username=postgres;Password=postgres    
+
+    container_name: productservice
+
+    depends_on:
+      postgres: 
+        condition: service_healthy
+
+    ports:
+      - "2004:8080"
+
+    networks:
+      - devops-network
+
+  orderservice:
+
+    build:
+      context: ./services/OrderService
+      dockerfile: Dockerfile
+
+    image: orderservice:v1
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=orderservicedb;Username=postgres;Password=postgres    
+      Services__UserService: http://userservice:8080/
+      Services__ProductService: http://productservice:8080/
+      Services__NotificationService: http://notificationservice:8080/
+      
+    container_name: orderservice
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    ports:
+      - "2005:8080"
+
+    networks:
+      - devops-network
+      
+  notificationservice:
+
+    build:
+      context: ./services/NotificationService
+      dockerfile: Dockerfile
+
+    image: notificationservice:v1
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=notificationservicedb;Username=postgres;Password=postgres    
+      
+    container_name: notificationservice
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    ports:
+      - "2006:8080"
+
+    networks:
+      - devops-network
+
+volumes:
+  postgres_data:
+
+networks:
+  devops-network:

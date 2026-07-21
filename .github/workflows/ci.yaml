@@ -42,8 +42,10 @@ jobs:
 
       - name: Download OWASP Dependency-Check
         run: |
-          curl -L https://github.com/dependency-check/DependencyCheck/releases/latest/download/dependency-check-12.1.6-release.zip -o dependency-check.zip
-          unzip dependency-check.zip
+          curl -L -o dependency-check.zip \
+          https://github.com/dependency-check/DependencyCheck/releases/latest/download/dependency-check-12.1.6-release.zip
+          ls -lh dependency-check.zip
+          file dependency-check.zip
 
       - name: Run Dependency-Check
         run: |
@@ -52,6 +54,12 @@ jobs:
             --scan services/OrderService \
             --format HTML \
             --out reports
+
+      - name: Upload Dependency Check Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: reports
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3

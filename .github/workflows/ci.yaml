@@ -42,6 +42,7 @@ jobs:
           -v ${{ github.workspace }}:/src \
           -v ${{ github.workspace }}/reports:/report \
           owasp/dependency-check:latest \
+          --nvdApiKey ${{ secrets.NVD_API_KEY }} \
           --scan /src/services/OrderService \
           --project OrderService \
           --format HTML \

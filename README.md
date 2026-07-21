@@ -46,3 +46,6 @@ cd ..
 cd tests
 
 dotnet new xunit -n ProductService.UnitTests
+
+
+docker run -d --name us -e ASPNETCORE_ENVIRONMENT=Development -p 3030:8080 userservice:v1

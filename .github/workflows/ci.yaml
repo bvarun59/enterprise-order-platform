@@ -34,26 +34,18 @@ jobs:
       - name: Test
         run: dotnet test OrderService.sln --configuration Release --no-build
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-
-      - name: Download OWASP Dependency-Check
+      - name: Run OWASP Dependency-Check
         run: |
-          curl -L -o dependency-check.zip \
-          https://github.com/dependency-check/DependencyCheck/releases/latest/download/dependency-check-12.1.6-release.zip
-          ls -lh dependency-check.zip
-          file dependency-check.zip
+          mkdir -p reports
 
-      - name: Run Dependency-Check
-        run: |
-          ./dependency-check/bin/dependency-check.sh \
-            --project "OrderService" \
-            --scan services/OrderService \
-            --format HTML \
-            --out reports
+          docker run --rm \
+          -v ${{ github.workspace }}:/src \
+          -v ${{ github.workspace }}/reports:/report \
+          owasp/dependency-check:latest \
+          --scan /src/services/OrderService \
+          --project OrderService \
+          --format HTML \
+          --out /report
 
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v4

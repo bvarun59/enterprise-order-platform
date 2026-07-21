@@ -24,9 +24,10 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        return Ok("Order Service is working");
+    var orders = await _orderService.GetAllOrdersAsync();
+    return Ok(orders);
     }
 
     [HttpGet("test-user/{id}")]
@@ -58,5 +59,16 @@ public class OrdersController : ControllerBase
         nameof(Get),
         new { id = order.Id },
         order);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+    var order = await _orderService.GetOrderByIdAsync(id);
+
+    if (order == null)
+        return NotFound();
+
+    return Ok(order);
     }
 }

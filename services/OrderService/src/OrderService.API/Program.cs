@@ -32,6 +32,11 @@ builder.Services.AddHttpClient<IProductServiceClient, ProductServiceClient>(clie
     client.Timeout = TimeSpan.FromSeconds(10);
 });
 
+builder.Services.AddHttpClient<INotificationServiceClient, NotificationServiceClient>(client =>
+{
+    client.BaseAddress = new Uri("http://notificationservice:8080");
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

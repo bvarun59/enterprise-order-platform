@@ -14,6 +14,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Apply EF Core migrations
+app.ApplyDatabaseMigrations();
+
 // Configure HTTP pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -25,7 +28,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-// Map Controllers
 app.MapControllers();
 
 app.Run();

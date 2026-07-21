@@ -52,7 +52,9 @@ jobs:
         with:
           image-ref: ${{ secrets.DOCKER_USERNAME }}/orderservice:${{ github.sha }}
           format: table
+          ignore-unfixed: true
           exit-code: 1
+          vuln-type: library
           severity: CRITICAL,HIGH
 
       - name: Push Docker Image

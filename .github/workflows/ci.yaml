@@ -77,6 +77,22 @@ jobs:
           vuln-type: library
           severity: CRITICAL,HIGH
 
+      - name: Install Syft
+        uses: anchore/sbom-action/download-syft@v0
+
+      - name: Generate SBOM
+        run: |
+          syft \
+            ${{ secrets.DOCKER_USERNAME }}/orderservice:${{ github.sha }} \
+            -o cyclonedx-json=sbom.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: orderservice-sbom
+          path: sbom.json
+
+
       - name: Push Docker Image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/orderservice:${{ github.sha }}

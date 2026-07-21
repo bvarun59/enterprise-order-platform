@@ -22,7 +22,16 @@ services:
 
 
   userservice:
+
+    build:
+      context: ./services/UserService
+      dockerfile: Dockerfile
+
     image: userservice:v1
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=userservicedb;Username=postgres;Password=postgres
 
     container_name: userservice
 
@@ -32,14 +41,20 @@ services:
     ports:
       - "2003:8080"
 
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-
     networks:
       - devops-network
 
   productservice:
+
+    build:
+      context: ./services/ProductService
+      dockerfile: Dockerfile
+
     image: productservice:v1
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=productservicedb;Username=postgres;Password=postgres    
 
     container_name: productservice
 
@@ -49,8 +64,30 @@ services:
     ports:
       - "2004:8080"
 
+    networks:
+      - devops-network
+
+  orderservice:
+
+    build:
+      context: ./services/OrderService
+      dockerfile: Dockerfile
+
+    image: orderservice:v1
+
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=orderservicedb;Username=postgres;Password=postgres    
+      Services__UserService: http://userservice:8080/
+      Services__ProductService: http://productservice:8080/
+      
+    container_name: orderservice
+
+    depends_on:
+      - postgres
+
+    ports:
+      - "2005:8080"
 
     networks:
       - devops-network

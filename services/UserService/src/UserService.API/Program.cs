@@ -8,6 +8,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Register Controllers
 builder.Services.AddControllers();
 
+builder.Services.AddHealthChecks();
+
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -29,5 +31,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 
 app.Run();

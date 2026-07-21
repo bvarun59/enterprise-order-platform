@@ -12,23 +12,28 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Name)
-            .IsRequired()
-            .HasMaxLength(200);
+        builder.Property(x => x.UserId)
+               .IsRequired();
 
-        builder.Property(x => x.Description)
-            .HasMaxLength(500);
+        builder.Property(x => x.ProductId)
+               .IsRequired();
 
-        builder.Property(x => x.Price)
-            .HasPrecision(18, 2);
+        builder.Property(x => x.Quantity)
+               .IsRequired();
 
-        builder.Property(x => x.Stock)
-            .IsRequired();
+        builder.Property(x => x.UnitPrice)
+               .HasPrecision(18, 2)
+               .IsRequired();
 
-        builder.Property(x => x.IsActive)
-            .HasDefaultValue(true);
+        builder.Property(x => x.TotalAmount)
+               .HasPrecision(18, 2)
+               .IsRequired();
+
+        builder.Property(x => x.Status)
+               .HasMaxLength(30)
+               .IsRequired();
 
         builder.Property(x => x.CreatedAt)
-            .IsRequired();
+               .IsRequired();
     }
 }

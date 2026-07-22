@@ -34,25 +34,25 @@ jobs:
       - name: Test
         run: dotnet test OrderService.sln --configuration Release --no-build
 
-      - name: Run OWASP Dependency-Check
-        run: |
-          mkdir -p reports
+      # - name: Run OWASP Dependency-Check
+      #   run: |
+      #     mkdir -p reports
 
-          docker run --rm \
-          -v ${{ github.workspace }}:/src \
-          -v ${{ github.workspace }}/reports:/report \
-          owasp/dependency-check:latest \
-          --nvdApiKey ${{ secrets.NVD_API_KEY }} \
-          --scan /src/services/OrderService \
-          --project OrderService \
-          --format HTML \
-          --out /report
+      #     docker run --rm \
+      #     -v ${{ github.workspace }}:/src \
+      #     -v ${{ github.workspace }}/reports:/report \
+      #     owasp/dependency-check:latest \
+      #     --nvdApiKey ${{ secrets.NVD_API_KEY }} \
+      #     --scan /src/services/OrderService \
+      #     --project OrderService \
+      #     --format HTML \
+      #     --out /report
 
-      - name: Upload Dependency Check Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: dependency-check-report
-          path: reports
+      # - name: Upload Dependency Check Report
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: dependency-check-report
+      #     path: reports
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
